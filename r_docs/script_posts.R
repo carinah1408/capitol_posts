@@ -18,3 +18,5 @@ one_perc <- one_perc %>%
 # remove doubled entries
 one_perc <- one_perc %>%
   dplyr::filter(!duplicated(post_text))
+
+test
