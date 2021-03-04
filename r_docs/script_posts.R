@@ -19,4 +19,4 @@ one_perc <- one_perc %>%
 one_perc <- one_perc %>%
   dplyr::filter(!duplicated(post_text))
 
-test
+test test
