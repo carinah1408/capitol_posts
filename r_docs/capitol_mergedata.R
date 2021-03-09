@@ -8,6 +8,10 @@ data05 <- read_csv("data05.csv")
 data06 <- read_csv("data06.csv")
 data07 <- read_csv("data07.csv")
 
-data <- rbind(data01, data02, data03, data04, data05, data06, data07) 
+# merging datasets, filter NAs and selecting only posts using "#"
+data <- rbind(data01, data02, data03, data04, data05, data06, data07) %>%
+  dplyr::filter(!is.na(body)) %>%
+  dplyr::filter(grepl("#", body))
 
+# transform into csv
 write.csv(data, "data_complete_meta00.csv")
