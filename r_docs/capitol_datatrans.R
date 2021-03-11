@@ -3,6 +3,7 @@ library(ndjson)
 
 # read in data sets
 posts <- read_csv("./data/Parler_posts.csv")
+
 big_posts00 <- stream_in("./data/parler_data000000000000.ndjson")
 big_posts01 <- stream_in("./data/parler_data000000000001.ndjson")
 big_posts02 <- stream_in("./data/parler_data000000000002.ndjson")
@@ -104,16 +105,27 @@ posts <- posts %>%
   dplyr::filter(post_timestamp == "4 days ago") %>%
   dplyr::select(-post_image)
 
-# subset of 1% of the data set for pre-analysis
-one_perc <- head(posts, n = 680)
+# remove NAs cases, duplicates, and only select those posts with "#"
+posts <- posts %>%
+  dplyr::mutate(post_text = as.character(post_text)) %>%
+  dplyr::filter(!is.na(post_text)) %>%
+  dplyr::filter(!duplicated(post_text)) %>%
+  dplyr::filter(grepl("#", post_text)) # resulted in 2,726 obs.
 
-# remove NAs cases
-one_perc <- one_perc %>%
-  dplyr::filter(!is.na(post_text))
-
-# remove doubled entries
-one_perc <- one_perc %>%
-  dplyr::filter(!duplicated(post_text))
+# subset of 5% of the data set for pre-analysis
+five_perc <- head(posts, n = 136)
 
 # transform into csv
-write.csv(one_perc, "post_1%.csv")
+write.csv(five_perc, "post_5%.csv")
+
+
+
+## investigate both data sets for similarities in usernames
+
+# remove @ in five_perc author_username
+five_perc$author_username = as.character(gsub("\\@", "", five_perc$author_username))
+
+# compare datasets
+intersect(five_perc$author_name, data01$username)
+
+
