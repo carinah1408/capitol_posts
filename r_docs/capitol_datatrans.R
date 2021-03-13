@@ -2,15 +2,14 @@ library(tidyverse)
 library(ndjson)
 library(plyr)
 
-# read in data sets
+## datasets
 posts <- read_csv("./data/Parler_posts.csv") # dataset taken from https://github.com/sbooeshaghi/parlertrick/blob/main/data/all_posts.csv.gz
 posts2 <- read_csv("./data/out.csv") # dataset scraped from html files (data_no_video.tar.gz)
-
+posts2 <- read_csv("./data/posts2.csv") 
 
 # datasets from https://zenodo.org/record/4442460#.YEzn7J37SMp
 big_posts00 <- stream_in("./data/parler_data000000000000.ndjson")
 big_posts01 <- stream_in("./data/parler_data000000000001.ndjson")
-
 big_posts02 <- stream_in("./data/parler_data000000000002.ndjson")
 
 big_posts03 <- stream_in("./data/parler_data000000000003.ndjson")
@@ -19,7 +18,7 @@ big_posts05 <- stream_in("./data/parler_data000000000005.ndjson")
 big_posts06 <- stream_in("./data/parler_data000000000006.ndjson")
 big_posts07 <- stream_in("./data/parler_data000000000007.ndjson")
 
-# read in meta data (big posts)
+# meta data (big posts)
 big_meta00 <- stream_in("./data/parler_user000000000000.ndjson")
 
 big_meta01 <- stream_in("./data/parler_user000000000001.ndjson")
@@ -31,29 +30,30 @@ big_meta06 <- stream_in("./data/parler_user000000000006.ndjson")
 big_meta07 <- stream_in("./data/parler_user000000000007.ndjson")
 big_meta08 <- stream_in("./data/parler_user000000000008.ndjson")
 
+
 ## big posts data set
 
 # select relevant columns
 big_meta00 <- big_meta00 %>%
-  dplyr::select(id, bio, human, username, user_followers)
+  dplyr::select(bio, human, username, user_followers)
 
 big_meta01 <- big_meta01 %>%
-  dplyr::select(id, bio, human, username, user_followers)
+  dplyr::select(bio, human, username, user_followers)
 
 big_meta02 <- big_meta02 %>%
-  dplyr::select(id, bio, human, username, user_followers)
+  dplyr::select(bio, human, username, user_followers)
 
 big_meta03 <- big_meta03 %>%
-  dplyr::select(id, bio, human, username, user_followers)
+  dplyr::select(bio, human, username, user_followers)
 
 big_meta04 <- big_meta04 %>%
-  dplyr::select(id, bio, human, username, user_followers)
+  dplyr::select(bio, human, username, user_followers)
 
 big_meta05 <- big_meta05 %>%
-  dplyr::select(id, bio, human, username, user_followers)
+  dplyr::select(bio, human, username, user_followers)
 
 big_meta06 <- big_meta06 %>%
-  dplyr::select(id, bio, human, username, user_followers)
+  dplyr::select(bio, human, username, user_followers)
 
 big_meta07 <- big_meta07 %>%
   dplyr::select(id, bio, human, username, user_followers)
@@ -61,44 +61,44 @@ big_meta07 <- big_meta07 %>%
 big_meta08 <- big_meta08 %>%
   dplyr::select(id, bio, human, username, user_followers)
 
-# reduce dataset to only those entries that were posted on 6th of January
+# reduce datasets to only those entries that were posted on 6th of January
 big_posts00 <- big_posts00 %>%
   dplyr::filter(str_detect(createdAtformatted, "2021-01-06"))
 
 big_posts01 <- big_posts01 %>%
   dplyr::filter(str_detect(createdAtformatted, "2021-01-06")) %>%
-  dplyr::select(body, createdAtformatted, datatype, verified, hashtags.0, impressions, reposts, upvotes, score, username, hashtags.1, hashtags.2)
+  dplyr::select(id, body, createdAtformatted, datatype, verified, hashtags.0, impressions, reposts, upvotes, score, username, hashtags.1, hashtags.2)
 
 big_posts02 <- big_posts02 %>%
   dplyr::filter(str_detect(createdAtformatted, "2021-01-06")) %>%
-  dplyr::select(body, createdAtformatted, datatype, verified, hashtags.0, impressions, reposts, upvotes, score, username, hashtags.1, hashtags.2)
+  dplyr::select(id, body, createdAtformatted, datatype, verified, hashtags.0, impressions, reposts, upvotes, score, username, hashtags.1, hashtags.2)
 
 big_posts03 <- big_posts03 %>%
   dplyr::filter(str_detect(createdAtformatted, "2021-01-06")) %>%
-  dplyr::select(body, createdAtformatted, datatype, verified, hashtags.0, impressions, reposts, upvotes, score, username, hashtags.1, hashtags.2)
+  dplyr::select(id, body, createdAtformatted, datatype, verified, hashtags.0, impressions, reposts, upvotes, score, username, hashtags.1, hashtags.2)
 
 big_posts04 <- big_posts04 %>%
   dplyr::filter(str_detect(createdAtformatted, "2021-01-06")) %>%
-  dplyr::select(body, createdAtformatted, datatype, verified, hashtags.0, impressions, reposts, upvotes, score, username, hashtags.1, hashtags.2)
+  dplyr::select(id, body, createdAtformatted, datatype, verified, hashtags.0, impressions, reposts, upvotes, score, username, hashtags.1, hashtags.2)
 
 big_posts05 <- big_posts05 %>%
   dplyr::filter(str_detect(createdAtformatted, "2021-01-06")) %>%
-  dplyr::select(body, createdAtformatted, datatype, verified, hashtags.0, impressions, reposts, upvotes, score, username, hashtags.1, hashtags.2)
+  dplyr::select(id, body, createdAtformatted, datatype, verified, hashtags.0, impressions, reposts, upvotes, score, username, hashtags.1, hashtags.2)
 
 big_posts06 <- big_posts06 %>%
   dplyr::filter(str_detect(createdAtformatted, "2021-01-06")) %>%
-  dplyr::select(body, createdAtformatted, datatype, verified, hashtags.0, impressions, reposts, upvotes, score, username, hashtags.1, hashtags.2)
+  dplyr::select(id, body, createdAtformatted, datatype, verified, hashtags.0, impressions, reposts, upvotes, score, username, hashtags.1, hashtags.2)
 
 big_posts07 <- big_posts07 %>%
   dplyr::filter(str_detect(createdAtformatted, "2021-01-06")) %>%
-  dplyr::select(body, createdAtformatted, datatype, verified, hashtags.0, impressions, reposts, upvotes, score, username, hashtags.1, hashtags.2)
+  dplyr::select(id, body, createdAtformatted, datatype, verified, hashtags.0, impressions, reposts, upvotes, score, username, hashtags.1, hashtags.2)
 
-# merge dataset based on common username and remove "human == FALSE"
+# merge datasets based on common username and remove "human == FALSE"
 
-data00 <- inner_join(big_posts00, big_meta00) 
+data03 <- inner_join(big_posts03, big_meta00) 
 
 # transform into csv
-write.csv(data01, "data01.csv")
+write.csv(data03, "data03.csv")
 
 
 
@@ -132,7 +132,7 @@ write.csv(posts2, "posts2.csv")
 five_perc <- posts2[sample(1:nrow(posts2), 428), ]
 
 # transform into csv
-write.csv(five_perc, "post_5%.csv")
+write.csv(five_perc, "post_5%_new.csv")
 
 
 ## investigate data sets for similarities in usernames (bots)
@@ -144,4 +144,4 @@ data01 <- read_csv("data01.csv")
 posts2$author_username = as.character(gsub("\\@", "", posts2$author_username))
 
 # compare datasets
-intersect(posts2$author_username, data01$username)
+intersect(posts2$author_username, data03$username)
