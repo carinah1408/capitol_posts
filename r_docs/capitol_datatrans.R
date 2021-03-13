@@ -1,12 +1,18 @@
 library(tidyverse)
 library(ndjson)
+library(plyr)
 
 # read in data sets
-posts <- read_csv("./data/Parler_posts.csv")
+posts <- read_csv("./data/Parler_posts.csv") # dataset taken from https://github.com/sbooeshaghi/parlertrick/blob/main/data/all_posts.csv.gz
+posts2 <- read_csv("./data/out.csv") # dataset scraped from html files (data_no_video.tar.gz)
 
+
+# datasets from https://zenodo.org/record/4442460#.YEzn7J37SMp
 big_posts00 <- stream_in("./data/parler_data000000000000.ndjson")
 big_posts01 <- stream_in("./data/parler_data000000000001.ndjson")
+
 big_posts02 <- stream_in("./data/parler_data000000000002.ndjson")
+
 big_posts03 <- stream_in("./data/parler_data000000000003.ndjson")
 big_posts04 <- stream_in("./data/parler_data000000000004.ndjson")
 big_posts05 <- stream_in("./data/parler_data000000000005.ndjson")
@@ -89,11 +95,10 @@ big_posts07 <- big_posts07 %>%
 
 # merge dataset based on common username and remove "human == FALSE"
 
-data08 <- inner_join(big_posts08, big_meta00) %>%
-  dplyr::filter(human == TRUE) 
+data00 <- inner_join(big_posts00, big_meta00) 
 
 # transform into csv
-write.csv(data07, "data07.csv")
+write.csv(data01, "data01.csv")
 
 
 
@@ -102,30 +107,41 @@ write.csv(data07, "data07.csv")
 
 # reduce dataset to only those entries that were posted "4 days ago" which was dated by the researcher to the 6th of January
 posts <- posts %>%
-  dplyr::filter(post_timestamp == "4 days ago") %>%
-  dplyr::select(-post_image)
+  dplyr::filter(post_timestamp >= "4 days ago" & post_timestamp <= "5 days ago") 
 
-# remove NAs cases, duplicates, and only select those posts with "#"
-posts <- posts %>%
+# remove NAs cases
+posts2 <- posts2 %>%
   dplyr::mutate(post_text = as.character(post_text)) %>%
-  dplyr::filter(!is.na(post_text)) %>%
-  dplyr::filter(!duplicated(post_text)) %>%
-  dplyr::filter(grepl("#", post_text)) # resulted in 2,726 obs.
+  dplyr::filter(!is.na(post_text))
 
-# subset of 5% of the data set for pre-analysis
-five_perc <- head(posts, n = 136)
+# create merged column (author_username + post_text)
+posts2$author_username_posts_text <- paste(posts2$author_username, posts2$post_text)
+
+# remove duplicates in new column
+posts2 <- ddply(posts2,.(author_username_posts_text), head, n = 1)
+
+# select only those posts that contain "#"
+posts2 <- posts2 %>%
+  dplyr::filter(grepl("#", post_text)) # results in 8,564 obs
+
+# export csv
+write.csv(posts2, "posts2.csv")
+
+# randomly select 5% of the data set for pre-analysis
+
+five_perc <- posts2[sample(1:nrow(posts2), 428), ]
 
 # transform into csv
 write.csv(five_perc, "post_5%.csv")
 
 
+## investigate data sets for similarities in usernames (bots)
 
-## investigate both data sets for similarities in usernames
+# read in data from edited datasets
+data01 <- read_csv("data01.csv")
 
 # remove @ in five_perc author_username
-five_perc$author_username = as.character(gsub("\\@", "", five_perc$author_username))
+posts2$author_username = as.character(gsub("\\@", "", posts2$author_username))
 
 # compare datasets
-intersect(five_perc$author_name, data01$username)
-
-
+intersect(posts2$author_username, data01$username)
